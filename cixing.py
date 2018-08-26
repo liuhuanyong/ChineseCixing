@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding:utf-8
-# File:process.py
+# File:cixing.py
 # Author:lhy<lhy_in_blcu@126.com>
 # Date:2018/6/9
 from pypinyin import lazy_pinyin
