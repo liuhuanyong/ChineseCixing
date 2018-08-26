@@ -6,10 +6,11 @@
 from pypinyin import lazy_pinyin
 import os
 
-class WordForm:
+class ChineseCixing:
     def __init__(self):
         cur_dir = '/'.join(os.path.abspath(__file__).split('/')[:-1])
-        charfile = os.path.join(cur_dir, 'chars.txt')
+        strokefile = os.path.join(cur_dir, 'strokes.txt')
+        radicalfile = os.path.join(cur_dir, 'radicals.txt')
         self.char_dict = {
             "点": "㇔",
             "横": "㇐",
@@ -44,29 +45,43 @@ class WordForm:
             "卧钩": "㇃",
             "斜钩": "㇂",
             }
-        self.stroken_dict = {i.strip().split(':')[0]:[self.char_dict[j.split('/')[0]] for j in i.strip().split(':')[1].split(',')] for i in open(charfile) if i.strip()}
+        self.stroke_dict = {i.strip().split(':')[0]:[self.char_dict[j.split('/')[0]] for j in i.strip().split(':')[1].split(',')] for i in open(strokefile) if i.strip()}
+        self.radical_dict = {i.strip().split(':')[0]:i.strip().split(':')[1] for i in open(radicalfile) if i.strip()}
 
+    '''获取汉字笔画'''
     def get_strokes(self, word):
         strokes = []
         chars = [c for c in word]
         for c in chars:
-            stroke = ''.join(self.stroken_dict.get(c, c))
+            stroke = ''.join(self.stroke_dict.get(c, c))
             strokes.append(stroke)
         return strokes
 
+    '''获取汉字汉语拼音'''
     def get_pinyin(self, word):
         pinyins = lazy_pinyin(word)
         return pinyins
 
+    '''获取汉字偏旁部首'''
+    def get_radical(self, word):
+        radicals = []
+        chars = [c for c in word]
+        for c in chars:
+            stroke = self.radical_dict.get(c, c)
+            radicals.append(stroke)
+        return radicals
+
 
 def demo():
-    word = '李克强总理今天来我家了,我感到非常荣幸'
-    handler = WordForm()
+    word = '自然语言处理是皇冠上的一颗明珠'
+    handler = ChineseCixing()
     strokes = handler.get_strokes(word)
     pinyins = handler.get_pinyin(word)
+    radicals = handler.get_radical(word)
 
-    print(strokes)
-    print(pinyins)
+    print('strokes', strokes)
+    print('pinyins', pinyins)
+    print('radicals', radicals)
 
 if __name__ == '__main__':
     demo()
